@@ -115,6 +115,10 @@ async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("Скасовано.")
     return ConversationHandler.END
 
+async def reset(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text("🔄 Окей! Починаємо спочатку.\n\nНатисни /start")
+    return ConversationHandler.END
+
 def main():
     app = ApplicationBuilder().token(TOKEN).build()
     conv = ConversationHandler(
@@ -124,7 +128,9 @@ def main():
             OPTION1: [MessageHandler(filters.TEXT & ~filters.COMMAND, get_option1)],
             OPTION2: [MessageHandler(filters.TEXT & ~filters.COMMAND, get_option2)],
         },
-        fallbacks=[CommandHandler("cancel", cancel)],
+        fallbacks=[CommandHandler("cancel", cancel),
+        CommandHandler("reset", reset)],
+        
     )
     app.add_handler(conv)
     app.add_handler(CallbackQueryHandler(moderate_cb, pattern="^(approve|reject)#"))
